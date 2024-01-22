@@ -20,7 +20,7 @@ io.on("connection", function (socket:any) {
 }); 
 
 app.get("/",(req:Request,res:Response)=>{
-    res.sendFile(path.resolve("public/index.html"))
+    res.sendFile(path.resolve("public/main.html"))
 });
 
 httpServer.listen(port,()=>{

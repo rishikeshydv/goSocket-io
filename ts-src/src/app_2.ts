@@ -5,6 +5,7 @@ import {Server} from "socket.io";
 import { createServer } from "http";
 
 const app = express();
+app.use(express.static('public'));
 const httpServer = createServer(app);
 const io = new Server(httpServer,{ /* options */ });
 const port = 8000;
@@ -37,7 +38,7 @@ io.on("connection", (socket:any) => {
   })
 
 app.get("/",(req:Request,res:Response)=>{
-    res.sendFile(path.resolve("public/index.html"))
+    res.render('main')
 });
 
 httpServer.listen(port,()=>{
