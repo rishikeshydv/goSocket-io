@@ -7,6 +7,14 @@
     <title>Document</title>
 </head>
 <body>
-    <p>Hello World!</p>
+    <button onclick="sendMsg()">Press Here</button>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io("http://localhost:8000");
+    function sendMsg() {
+        socket.emit("message", "HELLO WORLD");
+    }
+    </script>
 </body>
 </html>
