@@ -38,7 +38,7 @@ io.on("connection", (socket:any) => {
   })
 
 app.get("/",(req:Request,res:Response)=>{
-    res.render('main')
+    res.render('index')
 });
 
 httpServer.listen(port,()=>{
