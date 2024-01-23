@@ -1,0 +1,2 @@
+If client emits an 'event', the information inside the socket event goes to the server. 
+When the server emits an 'event', the information is displayed to all the clients in the specific socket.id or room
