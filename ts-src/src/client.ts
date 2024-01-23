@@ -11,9 +11,29 @@ const feedback = document.getElementById('feedback');
 const roomMessage = document.querySelector('.room-message');
 const users = document.querySelector('.users');
 
-const socket = io.connect("http://localhost:8000");   
+const socket = io.connect("http://localhost:8000");
 
+//Fetch URL Params from URL
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const username = urlParams.get('username');
+const roomname = urlParams.get('roomname');
+console.log(username, roomname);   
 
-socket.emit('new-user',()=>{
-
+socket.emit('new-user',{
+    username: username,
+    roomname: roomname
 });
+
+send?.addEventListener('click',()=>{
+    socket.emit('message',{
+    username: username,
+    message: message.value,
+    roomname: roomname
+    })
+});
+
+socket.on('typing', (user:any) => {
+    feedback.innerHTML = '<p><em>' + user + ' is typing...</em></p>';
+})
+
