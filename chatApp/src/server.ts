@@ -96,3 +96,6 @@ io.on("connection", (socket: any) => {
 httpServer.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
+
+
+//<!-- <h2><%= username %></h2> -->
