@@ -15,6 +15,5 @@ model transactions {
   roomId         Int    @id @map("_id")
   name      String
   currentMessage   String
-  picture   String
   time       String
 }

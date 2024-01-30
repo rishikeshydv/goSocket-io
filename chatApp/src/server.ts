@@ -3,7 +3,9 @@ import * as path from "path";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import { type } from "os";
+import { PrismaClient } from "@prisma/client";
 
+const prisma = new PrismaClient();
 const app = express();
 app.use(express.static("public"));
 const httpServer = createServer(app);
@@ -13,8 +15,10 @@ const io = new Server(httpServer, {
 const port = 8000;
 
 interface userCredentials {
-  username: string;
-  roomname: string;
+  roomId: string;
+  name: string;
+  currentMessage: string;
+  time: string;
 }
 
 var allUsers: any = {};
@@ -29,6 +33,16 @@ app.post("/room", (req: Request, res: Response) => {
   res.redirect(`/room?username=${username}&roomname=${roomname}`);
 });
 
+app.get("/agents",(req: Request, res: Response)=>{
+  async function userList(): Promise<any> {
+    try {
+      var usersRes = await prisma.transactions.findMany();
+      res.json(usersRes)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+})
 //                                    WEBSOCKETS PART
 
 function getUsers(userList: any) {
@@ -86,16 +100,20 @@ io.on("connection", (socket: any) => {
     });
 
     //Broadcasting the user who is typing
-    socket.on("typing", (data:any) => {
+    socket.on("typing", (data: any) => {
       socket.broadcast.to(data.roomname).emit("typing", data.username);
     });
-
   });
 });
+
+
+
+
+
 
 httpServer.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
 
+export {userList};
 
-//<!-- <h2><%= username %></h2> -->

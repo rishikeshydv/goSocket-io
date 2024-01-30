@@ -1,25 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/style.css" />
     <title>Chat App</title>
-</head>
-<body>
+    <style>
+        .profile-container {
+            display: flex;
+            justify-content: space-between; /* Align items with space between them */
+            align-items: center; /* Center items vertically */
+            padding: 20px;
+            border: 1px solid #ddd; /* Add border for better visibility */
+          }
+    </style>
+  </head>
+  <body>
     <div class="profile-container">
-        <div class="profile-left">
-          <!-- Round portion for user image -->
-          <img src="public/userProfile.png" alt="User Image" class="user-image">
-        </div>
-        <div class="profile-middle">
-          <!-- Username -->
-          <h2>Rishikesh Yadav</h2>
-        </div>
-        <div class="profile-right">
-          <!-- 'Send Request' button -->
-          <button class="send-request-button">Send Request</button>
-        </div>
+      <div class="profile-left">
+        <!-- Round portion for user image -->
+        <img
+          src="userProfile.png"
+          height="20px"
+          width="20px"
+          alt="User Image"
+          class="user-image"
+        />
       </div>
-</body>
+      <div class="profile-middle">
+        <!-- Username -->
+        <h2>Rishikesh Yadav</h2>
+      </div>
+      <div class="profile-right">
+        <!-- 'Send Request' button -->
+        <button class="send-request-button">Send Request</button>
+      </div>
+    </div>
+  </body>
 </html>
