@@ -4,13 +4,7 @@ import { Server } from "socket.io";
 import { createServer } from "http";
 import { type } from "os";
 import { PrismaClient } from "@prisma/client";
-
-// import * as crypto from 'crypto';
-// const hash = crypto.createHash('sha256');
-// const input = 'userId'
-// hash.update(input);
-// return hash.digest('hex');
-
+import * as crypto from 'crypto';
 
 const prisma = new PrismaClient();
 const app = express();
@@ -65,27 +59,19 @@ function getUsers(userList: any) {
 
 io.on("connection", (socket: any) => {
   console.log("A New User Connected");
-  socket.on("broker-connect", function (data: userCredentials) {
-    //creating a user dictionary 'in memory'
-    var user: any = {};
-    user[socket.id] = data.username;
-    if (allUsers[data.roomname]) {
-      allUsers[data.roomname].push(data.username);
-    } else {
-      allUsers[data.roomname] = [data.username];
-    }
+  socket.on("broker-connect", function (data:string) {
+
+    const hash = crypto.createHash('sha256');
+    hash.update(data);
+    hash.digest('hex');
 
     //joining the socket
-    socket.join(data.roomname);
+    socket.join(hash);
 
-    //Emitting New Username to Clients in that socket
-    io.to(data.roomname).emit("new-user", { username: data.username });
-
-    //Send online users array
-    io.to(data.roomname).emit(
-      "online-users",
-      getUsers(allUsers[data.roomname])
-    );
+    prisma.chatHistory.create({
+      roomId: hash,
+      fullChat:[]
+    })
   });
   // whenever we receive a 'message' we log it out
   socket.on("message", function (data: any) {
