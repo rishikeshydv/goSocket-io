@@ -23,6 +23,7 @@ interface userCredentials {
 }
 
 var allUsers: any = {};
+var fullChat:any = {}
 
 app.get("/", (req: Request, res: Response) => {
   res.render("index.ejs");
@@ -72,14 +73,21 @@ io.on("connection", (socket: any) => {
       roomId: hash,
       fullChat:[]
     })
+
+      // whenever we receive a 'message' we log it out
+  socket.on("sendMessage", function (currMsg: any) {
+    socket.broadcast.to(hash).emit(currMsg);
+    prisma.chatHistory.update({
+      where: {
+        roomId:hash,
+      },
+      data: {
+        fullChat:[...fullChat,currMsg]
+      }
+    })
   });
-  // whenever we receive a 'message' we log it out
-  socket.on("message", function (data: any) {
-    io.to(data.roomname).emit("message", {
-      username: data.username,
-      message: data.message,
-    });
   });
+
 
   //whenever we receive a disconnect signal, we
   socket.on("disconnect", function () {
@@ -93,11 +101,11 @@ io.on("connection", (socket: any) => {
     });
 
     //Broadcasting the user who is typing
-    socket.on("typing", (data: any) => {
-      socket.broadcast.to(data.roomname).emit("typing", data.username);
-    });
-  });
-});
+//     socket.on("typing", (data: any) => {
+//       socket.broadcast.to(data.roomname).emit("typing", data.username);
+//     });
+//   });
+// });
 
 
 
