@@ -5,6 +5,13 @@ import { createServer } from "http";
 import { type } from "os";
 import { PrismaClient } from "@prisma/client";
 
+// import * as crypto from 'crypto';
+// const hash = crypto.createHash('sha256');
+// const input = 'userId'
+// hash.update(input);
+// return hash.digest('hex');
+
+
 const prisma = new PrismaClient();
 const app = express();
 app.use(express.static("public"));
@@ -58,7 +65,7 @@ function getUsers(userList: any) {
 
 io.on("connection", (socket: any) => {
   console.log("A New User Connected");
-  socket.on("new-user", function (data: userCredentials) {
+  socket.on("broker-connect", function (data: userCredentials) {
     //creating a user dictionary 'in memory'
     var user: any = {};
     user[socket.id] = data.username;

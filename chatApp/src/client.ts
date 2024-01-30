@@ -43,7 +43,7 @@ socket.on('joined-user', (data:any)=>{
 })
 
 //Displaying the message sent from user
-socket.on('message', (data) => {
+socket.on('message', (data:any) => {
     output.innerHTML += '<p><strong>' + data.username + '</strong>: ' + data.message + '</p>';
     feedback.innerHTML = '';
     document.querySelector('.chat-message').scrollTop = document.querySelector('.chat-message').scrollHeight
