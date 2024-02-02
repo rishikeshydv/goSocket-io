@@ -29,12 +29,6 @@ app.get("/", (req: Request, res: Response) => {
   res.render("index.ejs");
 });
 
-app.post("/room", (req: Request, res: Response) => {
-  var roomname = req.body.roomname;
-  var username = req.body.username;
-  res.redirect(`/room?username=${username}&roomname=${roomname}`);
-});
-
 app.get("/agents",(req: Request, res: Response)=>{
   async function userList(): Promise<any> {
     try {
