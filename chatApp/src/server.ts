@@ -6,7 +6,10 @@ import { type } from "os";
 import { PrismaClient } from "@prisma/client";
 import * as crypto from 'crypto';
 
+//setting up prisma ORM
 const prisma = new PrismaClient();
+
+//setting up socket.io server
 const app = express();
 app.use(express.static("public"));
 const httpServer = createServer(app);
@@ -56,28 +59,37 @@ io.on("connection", (socket: any) => {
   console.log("A New User Connected");
   socket.on("broker-connect", function (data:string) {
 
+    //the roomId is hashed
     const hash = crypto.createHash('sha256');
     hash.update(data);
-    hash.digest('hex');
+    const hashedRoomId = hash.digest('hex');
 
     //joining the socket
-    socket.join(hash);
+    socket.join(hashedRoomId);
 
     prisma.chatHistory.create({
-      roomId: hash,
-      fullChat:[]
+      data:{
+        fullChat:[],
+        roomId:hashedRoomId,
+      }
     })
 
       // whenever we receive a 'message' we log it out
   socket.on("sendMessage", function (currMsg: any) {
-    socket.broadcast.to(hash).emit(currMsg);
+    socket.broadcast.to(hashedRoomId).emit("message",currMsg);
     prisma.chatHistory.update({
       where: {
-        roomId:hash,
+        roomId: hashedRoomId,
       },
       data: {
-        fullChat:[...fullChat,currMsg]
+        fullChat:{
+          push:currMsg,
+        }
       }
+    }).then(()=> {
+      console.log("Update Successful");
+    }).catch((error)=>{
+      console.error("Error updating chat history")
     })
   });
   });

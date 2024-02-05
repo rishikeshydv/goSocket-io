@@ -4,7 +4,7 @@
 
 //for "id's"
 const messageSection = document.getElementById('chat-messages');
-const inputMessage = document.getElementById('message-input');
+const inputMessage = document.getElementById('message-input') as HTMLInputElement;
 const sendButton = document.getElementById('send-button');
 // const feedback = document.getElementById('feedback');
 
@@ -12,11 +12,20 @@ const socket = io.connect("http://localhost:8000");
 
 
 sendButton?.addEventListener('click',()=>{
-    socket.emit('sendMessage',inputMessage?.value);
-    const messageElement = document.createElement('div');
-    messageElement.textContent = inputMessage?.value;
-    messageSection?.appendChild(messageElement);
-    inputMessage.value="";
+    if (inputMessage?.value.trim() !== "") {
+        socket.emit('sendMessage',inputMessage?.value);
+        const messageElement = document.createElement('div');
+        messageElement.textContent = inputMessage?.value;
+        messageSection?.appendChild(messageElement);
+        inputMessage.value="";
+    }
+    else {
+        console.log("Please enter a non-empty message.");
+    }
+});
+
+socket.on("disconnect", () => {
+    console.log("Socket disconnected.");
 });
 
 // socket.on('typing', (user:any) => {
