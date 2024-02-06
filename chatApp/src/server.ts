@@ -1,8 +1,6 @@
 import express, { Request, Response } from "express";
-import * as path from "path";
 import { Server } from "socket.io";
 import { createServer } from "http";
-import { type } from "os";
 import { PrismaClient } from "@prisma/client";
 import * as crypto from "crypto";
 
@@ -25,8 +23,11 @@ interface userCredentials {
   time: string;
 }
 
-var allUsers: any = {};
-var fullChat: any = {};
+interface RoomData {
+  [roomName: string]: string[];
+}
+let allUsers: RoomData = {}
+var fullChat: string[] = [];
 
 app.get("/", (req: Request, res: Response) => {
   res.render("index.ejs");
@@ -57,14 +58,21 @@ app.get("/agents", (req: Request, res: Response) => {
 
 io.on("connection", (socket: any) => {
   console.log("A New User Connected");
-  socket.on("broker-connect", function (data: string) {
+  socket.on("broker-connect", function (data: any) {
     //the roomId is hashed
     const hash = crypto.createHash("sha256");
-    hash.update(data);
+    hash.update(data["_roomId"]);
     const hashedRoomId = hash.digest("hex");
 
     //joining the socket
     socket.join(hashedRoomId);
+
+    if (allUsers[hashedRoomId]){
+      allUsers[hashedRoomId].push(data["_user"])
+    }
+    else {
+      allUsers[hashedRoomId]=data["_user"]
+    }
 
     prisma.chatHistory.create({
       data: {
